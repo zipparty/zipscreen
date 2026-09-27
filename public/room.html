@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Zip Screen</title>
+
+  <link
+    rel="stylesheet"
+    href="chat.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="room.css"
+  >
+
+</head>
+
+
+<body>
+
+
+<main
+  id="zipRoom"
+  class="zip-room"
+>
+
+
+  <!-- =========================
+       공유 화면
+  ========================== -->
+
+  <section class="screen-area">
+
+    <div class="video-area">
+
+
+      <div
+        id="waitingScreen"
+        class="waiting-screen"
+      >
+
+        <div class="waiting-icon">
+          ▶
+        </div>
+
+        <div>
+          화면 공유를 기다리고 있습니다.
+        </div>
+
+      </div>
+
+
+      <div id="videoContainer"></div>
+
+      <button
+        id="fullscreenBtn"
+        class="fullscreen-button"
+        type="button"
+        title="전체화면"
+        aria-label="전체화면"
+      >
+        ⛶
+      </button>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================
+       오른쪽 패널
+  ========================== -->
+
+  <aside class="chat-panel">
+
+
+    <header class="chat-header">
+
+
+      <strong class="chat-logo">
+        zip screen
+      </strong>
+
+
+      <button
+        id="chatCollapseBtn"
+        class="chat-collapse-button"
+        type="button"
+        title="채팅창 접기"
+      >
+        ›
+      </button>
+
+
+    </header>
+
+
+
+    <!-- 방 정보 -->
+
+    <section class="tvp-section">
+
+
+      <div class="tvp-section-row">
+
+
+        <strong
+          id="roomCode"
+          class="tvp-room-code"
+        >
+          -
+        </strong>
+
+
+        <button
+          id="copyBtn"
+          class="tvp-copy-button"
+          type="button"
+        >
+          복사
+        </button>
+
+
+      </div>
+
+
+
+      <!-- 닉네임 -->
+
+      <div
+        class="
+          tvp-section-row
+          tvp-nickname-display-row
+        "
+      >
+
+
+        <span
+          id="currentNickname"
+          class="tvp-current-nickname"
+        >
+          -
+        </span>
+
+
+        <button
+          id="changeNicknameBtn"
+          class="tvp-copy-button"
+          type="button"
+        >
+          변경
+        </button>
+
+
+      </div>
+
+
+
+      <!-- 화면 공유 -->
+
+      <div
+        id="hostControls"
+        class="host-controls"
+        style="display:none;"
+      >
+
+
+        <button
+          id="shareBtn"
+          class="share-button"
+          type="button"
+        >
+          화면 공유 시작
+        </button>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- 참가자 -->
+
+    <section
+      class="
+        tvp-section
+        tvp-participant-section
+      "
+    >
+
+
+      <button
+        id="participant-button"
+        class="tvp-participant-button"
+        type="button"
+      >
+
+        👥 참가자
+
+        <span id="participant-count">
+          0
+        </span>
+
+      </button>
+
+
+      <div
+        id="participant-popup"
+        class="tvp-participant-popup"
+        style="display:none;"
+      >
+
+
+        <ul
+          id="participant-list"
+          class="tvp-participant-list"
+        ></ul>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- 채팅 -->
+
+    <section
+      id="chat-section"
+      class="tvp-chat-section"
+    >
+
+
+      <div
+        id="empty-chat"
+        class="tvp-empty-chat"
+      >
+
+
+        <div class="tvp-empty-chat-icon">
+          💬
+        </div>
+
+
+        <div class="tvp-empty-chat-title">
+          아직 메시지가 없습니다
+        </div>
+
+
+        <div class="tvp-empty-chat-description">
+
+          같이 보는 사람에게<br>
+          메시지를 보내 보세요.
+
+        </div>
+
+
+      </div>
+
+
+      <ul
+        id="messages"
+        class="tvp-message-list"
+      ></ul>
+
+
+    </section>
+
+
+
+    <!-- 답글 미리보기 -->
+
+    <div
+      id="replyPreview"
+      class="tvp-reply-preview"
+      hidden
+    >
+
+
+      <div class="tvp-reply-preview-content">
+
+
+        <strong
+          id="replyPreviewNickname"
+          class="tvp-reply-preview-nickname"
+        ></strong>
+
+
+        <span
+          id="replyPreviewMessage"
+          class="tvp-reply-preview-message"
+        ></span>
+
+
+      </div>
+
+
+      <button
+        id="replyCancelBtn"
+        class="tvp-reply-cancel-button"
+        type="button"
+        title="답글 취소"
+      >
+        ×
+      </button>
+
+
+    </div>
+
+
+
+    <!-- 입력 -->
+
+    <section class="tvp-input-section">
+
+
+      <div class="tvp-input-box">
+
+
+        <input
+          id="messageInput"
+          class="tvp-message-input"
+          type="text"
+          placeholder="메시지를 입력하세요"
+          autocomplete="off"
+        >
+
+
+        <button
+          id="sendBtn"
+          class="tvp-send-button"
+          type="button"
+          title="전송"
+        >
+          ↑
+        </button>
+
+
+      </div>
+
+
+    </section>
+
+
+  </aside>
+
+
+
+  <!-- 접었을 때 -->
+
+  <button
+    id="chatExpandBtn"
+    class="chat-expand-button"
+    type="button"
+    title="채팅창 열기"
+  >
+    ‹
+  </button>
+
+
+</main>
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"
+></script>
+
+
+<script>
+
+
+/* =========================
+   기본 정보
+========================= */
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+const roomId =
+  params.get("room");
+
+
+const isHost =
+  params.get("host") === "1";
+
+
+
+/* =========================
+   DOM
+========================= */
+
+const zipRoom =
+  document.getElementById(
+    "zipRoom"
+  );
+
+
+const roomCode =
+  document.getElementById(
+    "roomCode"
+  );
+
+
+const copyBtn =
+  document.getElementById(
+    "copyBtn"
+  );
+
+
+const hostControls =
+  document.getElementById(
+    "hostControls"
+  );
+
+
+const shareBtn =
+  document.getElementById(
+    "shareBtn"
+  );
+
+
+const videoContainer =
+  document.getElementById(
+    "videoContainer"
+  );
+
+
+const waitingScreen =
+  document.getElementById(
+    "waitingScreen"
+  );
+
+
+const videoArea =
+  document.querySelector(
+    ".video-area"
+  );
+
+
+const fullscreenBtn =
+  document.getElementById(
+    "fullscreenBtn"
+  );
+
+
+const currentNickname =
+  document.getElementById(
+    "currentNickname"
+  );
+
+
+const changeNicknameBtn =
+  document.getElementById(
+    "changeNicknameBtn"
+  );
+
+
+const chatCollapseBtn =
+  document.getElementById(
+    "chatCollapseBtn"
+  );
+
+
+const chatExpandBtn =
+  document.getElementById(
+    "chatExpandBtn"
+  );
+
+
+const participantButton =
+  document.getElementById(
+    "participant-button"
+  );
+
+
+const participantCount =
+  document.getElementById(
+    "participant-count"
+  );
+
+
+const participantPopup =
+  document.getElementById(
+    "participant-popup"
+  );
+
+
+const participantList =
+  document.getElementById(
+    "participant-list"
+  );
+
+
+const messages =
+  document.getElementById(
+    "messages"
+  );
+
+
+const messageInput =
+  document.getElementById(
+    "messageInput"
+  );
+
+
+const sendBtn =
+  document.getElementById(
+    "sendBtn"
+  );
+
+
+const replyPreview =
+  document.getElementById(
+    "replyPreview"
+  );
+
+
+const replyPreviewNickname =
+  document.getElementById(
+    "replyPreviewNickname"
+  );
+
+
+const replyPreviewMessage =
+  document.getElementById(
+    "replyPreviewMessage"
+  );
+
+
+const replyCancelBtn =
+  document.getElementById(
+    "replyCancelBtn"
+  );
+
+
+
+/* =========================
+   상태
+========================= */
+
+let chatName =
+  isHost
+    ? "방장"
+    : "관객-" +
+      Math.floor(
+        Math.random() * 1000
+      );
+
+
+let currentReplyTo =
+  null;
+
+
+
+currentNickname.textContent =
+  chatName;
+
+
+roomCode.textContent =
+  roomId || "-";
+
+
+if (isHost) {
+
+  hostControls.style.display =
+    "block";
+
+}
+
+
+
+/* =========================
+   복사
+========================= */
+
+copyBtn.addEventListener(
+  "click",
+  async () => {
+
+
+    const inviteUrl =
+      `${window.location.origin}/room.html?room=${roomId}`;
+
+
+    await navigator.clipboard
+      .writeText(
+        inviteUrl
+      );
+
+
+    const originalText =
+      copyBtn.textContent;
+
+
+    copyBtn.textContent =
+      "완료";
+
+
+    setTimeout(
+      () => {
+
+        copyBtn.textContent =
+          originalText;
+
+      },
+      1000
+    );
+
+  }
+);
+
+
+
+/* =========================
+   패널 접기
+========================= */
+
+chatCollapseBtn.addEventListener(
+  "click",
+  () => {
+
+    zipRoom.classList.add(
+      "chat-hidden"
+    );
+
+  }
+);
+
+
+chatExpandBtn.addEventListener(
+  "click",
+  () => {
+
+    zipRoom.classList.remove(
+      "chat-hidden"
+    );
+
+  }
+);
+
+
+
+/* =========================
+   Socket.IO
+========================= */
+
+const socket =
+  io();
+
+
+socket.emit(
+  "join-room",
+  {
+    roomId,
+    nickname:
+      chatName,
+    isHost,
+  }
+);
+
+
+
+/* =========================
+   참가자
+========================= */
+
+socket.on(
+  "participant-update",
+  ({
+    count,
+    participants
+  }) => {
+
+
+    participantCount.textContent =
+      count;
+
+
+    participantList.innerHTML =
+      "";
+
+
+    participants.forEach(
+      (participant) => {
+
+
+        const item =
+          document.createElement(
+            "li"
+          );
+
+
+        item.className =
+          "tvp-participant-item";
+
+
+        const left =
+          document.createElement(
+            "span"
+          );
+
+
+        left.className =
+          "zip-participant-name";
+
+
+        const emoji =
+          document.createElement(
+            "span"
+          );
+
+
+        emoji.textContent =
+          participant.emoji ||
+          "🙂";
+
+
+        const name =
+          document.createElement(
+            "span"
+          );
+
+
+        name.textContent =
+          participant.nickname;
+
+
+        left.appendChild(
+          emoji
+        );
+
+
+        left.appendChild(
+          name
+        );
+
+
+        item.appendChild(
+          left
+        );
+
+
+        if (
+          participant.isHost
+        ) {
+
+
+          const badge =
+            document.createElement(
+              "span"
+            );
+
+
+          badge.className =
+            "participant-host-badge";
+
+
+          badge.textContent =
+            "HOST";
+
+
+          item.appendChild(
+            badge
+          );
+
+        }
+
+
+        participantList.appendChild(
+          item
+        );
+
+      }
+    );
+
+  }
+);
+
+
+
+participantButton.addEventListener(
+  "click",
+  () => {
+
+
+    const isOpen =
+      participantPopup.style.display
+      !== "none";
+
+
+    participantPopup.style.display =
+      isOpen
+        ? "none"
+        : "block";
+
+  }
+);
+
+
+
+/* =========================
+   닉네임
+========================= */
+
+changeNicknameBtn.addEventListener(
+  "click",
+  () => {
+
+
+    const newNickname =
+      prompt(
+        "변경할 닉네임을 입력하세요.",
+        chatName
+      );
+
+
+    if (!newNickname) {
+      return;
+    }
+
+
+    const trimmed =
+      newNickname.trim();
+
+
+    if (!trimmed) {
+      return;
+    }
+
+
+    socket.emit(
+      "change-nickname",
+      {
+        roomId,
+        nickname:
+          trimmed,
+      }
+    );
+
+
+    chatName =
+      trimmed;
+
+
+    currentNickname.textContent =
+      chatName;
+
+  }
+);
+
+
+
+socket.on(
+  "nickname-error",
+  ({
+    message
+  }) => {
+
+    alert(
+      message ||
+      "닉네임을 사용할 수 없습니다."
+    );
+
+  }
+);
+
+
+
+/* =========================
+   답글
+========================= */
+
+function selectReply(
+  data
+) {
+
+
+  currentReplyTo = {
+    socketId:
+      data.socketId ||
+      "",
+
+    nickname:
+      data.username ||
+      "알 수 없음",
+
+    message:
+      data.message ||
+      "",
+
+    emoji:
+      data.emoji ||
+      "🙂",
+  };
+
+
+  replyPreviewNickname.textContent =
+    `${currentReplyTo.emoji} ${currentReplyTo.nickname}`;
+
+
+  replyPreviewMessage.textContent =
+    currentReplyTo.message;
+
+
+  replyPreview.hidden =
+    false;
+
+
+  messageInput.focus();
+
+}
+
+
+function cancelReply() {
+
+  currentReplyTo =
+    null;
+
+
+  replyPreview.hidden =
+    true;
+
+
+  replyPreviewNickname.textContent =
+    "";
+
+
+  replyPreviewMessage.textContent =
+    "";
+
+}
+
+
+replyCancelBtn.addEventListener(
+  "click",
+  cancelReply
+);
+
+
+
+/* =========================
+   LiveKit
+========================= */
+
+const room = new LivekitClient.Room({
+  adaptiveStream: true,
+  dynacast: true,
+});
+
+let isScreenSharing = false;
+let localScreenTrack = null;
+
+
+/* =========================
+   전체화면
+========================= */
+
+fullscreenBtn.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      if (!document.fullscreenElement) {
+
+        await zipRoom.requestFullscreen();
+
+      } else {
+
+        await document.exitFullscreen();
+      }
+
+    } catch (error) {
+
+      console.error(
+        "전체화면 전환 오류:",
+        error
+      );
+    }
+  }
+);
+
+
+document.addEventListener(
+  "fullscreenchange",
+  () => {
+
+    const isFullscreen =
+      document.fullscreenElement ===
+      zipRoom;
+
+    fullscreenBtn.textContent =
+      isFullscreen
+        ? "×"
+        : "⛶";
+
+    fullscreenBtn.title =
+      isFullscreen
+        ? "전체화면 종료"
+        : "전체화면";
+  }
+);
+
+
+/* =========================
+   관객: 공유 화면 수신
+========================= */
+
+room.on(
+  LivekitClient.RoomEvent.TrackSubscribed,
+  (track) => {
+
+    const element =
+      track.attach();
+
+    element.autoplay = true;
+    element.playsInline = true;
+
+    if (
+      track.kind ===
+      LivekitClient.Track.Kind.Video
+    ) {
+
+      waitingScreen.style.display =
+        "none";
+
+      element.classList.add(
+        "shared-video"
+      );
+
+      videoContainer.innerHTML =
+        "";
+
+      videoContainer.appendChild(
+        element
+      );
+    }
+
+    if (
+      track.kind ===
+      LivekitClient.Track.Kind.Audio
+    ) {
+
+      document.body.appendChild(
+        element
+      );
+    }
+  }
+);
+
+
+/* =========================
+   관객: 공유 화면 종료
+========================= */
+
+room.on(
+  LivekitClient.RoomEvent.TrackUnsubscribed,
+  (track) => {
+
+    if (
+      track.kind !==
+      LivekitClient.Track.Kind.Video
+    ) {
+      return;
+    }
+
+    track.detach();
+
+    videoContainer.innerHTML =
+      "";
+
+    waitingScreen.style.display =
+      "flex";
+  }
+);
+
+
+/* =========================
+   LiveKit 입장
+========================= */
+
+async function joinLiveKitRoom() {
+
+  try {
+
+    const username =
+      (isHost ? "host-" : "viewer-")
+      + Date.now()
+      + "-"
+      + Math.random()
+        .toString(36)
+        .slice(2, 7);
+
+    const response =
+      await fetch(
+        `/token?room=${encodeURIComponent(roomId)}&username=${encodeURIComponent(username)}`
+      );
+
+    const data =
+      await response.json();
+
+    await room.connect(
+      data.url,
+      data.token
+    );
+
+  } catch (error) {
+
+    console.error(error);
+  }
+}
+
+
+/* =========================
+   방장: 1080p / 30fps 공유 시작
+========================= */
+
+async function startScreenShare() {
+
+  try {
+
+    /*
+     * LiveKit의 기본 화면공유 API는 그대로 사용하되
+     * 캡처 해상도/FPS와 송출 인코딩 품질을 명시한다.
+     *
+     * 1080p / 30fps:
+     * OTT·영상처럼 움직임이 많은 화면에서
+     * 글자 가독성과 움직임 사이의 균형을 맞춘 설정.
+     */
+
+    await room.localParticipant
+      .setScreenShareEnabled(
+        true,
+        {
+          audio: true,
+
+          resolution: {
+            width: 1920,
+            height: 1080,
+            frameRate: 60,
+          },
+
+          contentHint: "motion",
+        },
+        {
+          videoEncoding: {
+            maxBitrate: 10_000_000,
+            maxFramerate: 60,
+          },
+
+          degradationPreference:
+            "maintain-framerate",
+        }
+      );
+
+    const publication =
+      room.localParticipant
+        .getTrackPublication(
+          LivekitClient.Track.Source.ScreenShare
+        );
+
+    if (
+      !publication ||
+      !publication.track
+    ) {
+      throw new Error(
+        "화면 공유 트랙을 찾을 수 없습니다."
+      );
+    }
+
+    localScreenTrack =
+      publication.track;
+
+    isScreenSharing =
+      true;
+
+
+    /*
+     * 방장 자신의 공유 화면
+     */
+
+    waitingScreen.style.display =
+      "none";
+
+    const element =
+      localScreenTrack.attach();
+
+    element.autoplay =
+      true;
+
+    element.playsInline =
+      true;
+
+    /*
+     * 방장은 자기 화면공유 오디오를
+     * 다시 들으면 에코가 생기므로 음소거.
+     */
+
+    element.muted =
+      true;
+
+    element.classList.add(
+      "shared-video"
+    );
+
+    videoContainer.innerHTML =
+      "";
+
+    videoContainer.appendChild(
+      element
+    );
+
+    shareBtn.textContent =
+      "화면 공유 중지";
+
+
+    /*
+     * Chrome 상단의 '공유 중지'를
+     * 눌렀을 때도 UI 복구
+     */
+
+    const mediaStreamTrack =
+      localScreenTrack
+        .mediaStreamTrack;
+
+    if (mediaStreamTrack) {
+
+      /*
+       * 브라우저가 지원하는 경우
+       * 움직임이 많은 영상임을 힌트로 제공.
+       */
+
+      try {
+
+        mediaStreamTrack.contentHint =
+          "motion";
+
+      } catch (error) {
+
+        console.warn(
+          "contentHint 설정 불가:",
+          error
+        );
+      }
+
+
+      mediaStreamTrack.addEventListener(
+        "ended",
+        () => {
+
+          finishScreenShare();
+
+        },
+        {
+          once: true
+        }
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "화면 공유 오류:",
+      error
+    );
+
+    isScreenSharing =
+      false;
+
+    localScreenTrack =
+      null;
+
+    shareBtn.textContent =
+      "화면 공유 시작";
+
+    /*
+     * 사용자가 공유 선택창에서 취소한 경우에는
+     * 불필요한 경고창을 띄우지 않는다.
+     */
+  }
+}
+
+
+/* =========================
+   방장: 공유 중지
+========================= */
+
+async function stopScreenShare() {
+
+  if (!isScreenSharing) {
+    return;
+  }
+
+  try {
+
+    await room.localParticipant
+      .setScreenShareEnabled(
+        false
+      );
+
+  } catch (error) {
+
+    console.error(error);
+  }
+
+  finishScreenShare();
+}
+
+
+/* =========================
+   방장: 공유 종료 후 UI 복구
+========================= */
+
+function finishScreenShare() {
+
+  if (!isScreenSharing) {
+    return;
+  }
+
+  isScreenSharing =
+    false;
+
+  if (localScreenTrack) {
+
+    try {
+
+      localScreenTrack.detach();
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  }
+
+  localScreenTrack =
+    null;
+
+  videoContainer.innerHTML =
+    "";
+
+  waitingScreen.style.display =
+    "flex";
+
+  shareBtn.textContent =
+    "화면 공유 시작";
+}
+
+
+/* =========================
+   방장 공유 버튼
+========================= */
+
+if (isHost) {
+
+  shareBtn.addEventListener(
+    "click",
+    async () => {
+
+      if (isScreenSharing) {
+
+        await stopScreenShare();
+
+        return;
+      }
+
+      await startScreenShare();
+    }
+  );
+}
+
+
+/* =========================
+   채팅 전송
+========================= */
+
+function sendMessage() {
+
+
+  const message =
+    messageInput.value.trim();
+
+
+  if (!message) {
+    return;
+  }
+
+
+  socket.emit(
+    "chat-message",
+    {
+      roomId,
+
+      message,
+
+      replyTo:
+        currentReplyTo
+          ? {
+              socketId:
+                currentReplyTo.socketId,
+
+              nickname:
+                currentReplyTo.nickname,
+
+              message:
+                currentReplyTo.message,
+
+              emoji:
+                currentReplyTo.emoji,
+            }
+          : null,
+    }
+  );
+
+
+  messageInput.value =
+    "";
+
+
+  cancelReply();
+
+
+  messageInput.focus();
+
+}
+
+
+
+sendBtn.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+messageInput.addEventListener(
+  "keydown",
+  (event) => {
+
+
+    if (
+      event.key ===
+        "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+
+/* =========================
+   메시지 표시
+========================= */
+
+socket.on(
+  "chat-message",
+  (data) => {
+
+
+    hideEmptyChat();
+
+
+    const row =
+      document.createElement(
+        "li"
+      );
+
+
+    row.className =
+      "chat-message-row";
+
+
+    const isMine =
+      data.socketId ===
+      socket.id;
+
+
+    if (isMine) {
+
+      row.classList.add(
+        "chat-message-row--mine"
+      );
+
+    }
+
+
+    /* 이모지 */
+
+    const emoji =
+      document.createElement(
+        "div"
+      );
+
+
+    emoji.className =
+      "chat-message-emoji";
+
+
+    emoji.textContent =
+      data.emoji ||
+      "🙂";
+
+
+
+    /* 내용 */
+
+    const content =
+      document.createElement(
+        "div"
+      );
+
+
+    content.className =
+      "chat-message-content";
+
+
+
+    /* 닉네임 */
+
+    const name =
+      document.createElement(
+        "div"
+      );
+
+
+    name.className =
+      "chat-message-nickname";
+
+
+    name.textContent =
+      data.username ||
+      "알 수 없음";
+
+
+    content.appendChild(
+      name
+    );
+
+
+
+    /* 답글 원문 */
+
+    if (data.replyTo) {
+
+
+      const reference =
+        document.createElement(
+          "div"
+        );
+
+
+      reference.className =
+        "chat-reply-reference";
+
+
+      const replyName =
+        document.createElement(
+          "span"
+        );
+
+
+      replyName.className =
+        "chat-reply-reference-nickname";
+
+
+      replyName.textContent =
+        `${data.replyTo.emoji || "🙂"} ${data.replyTo.nickname || "알 수 없음"}`;
+
+
+      const replyMessage =
+        document.createElement(
+          "span"
+        );
+
+
+      replyMessage.className =
+        "chat-reply-reference-message";
+
+
+      replyMessage.textContent =
+        data.replyTo.message ||
+        "";
+
+
+      reference.appendChild(
+        replyName
+      );
+
+
+      reference.appendChild(
+        replyMessage
+      );
+
+
+      content.appendChild(
+        reference
+      );
+
+    }
+
+
+
+    /* 말풍선 */
+
+    const bubble =
+      document.createElement(
+        "div"
+      );
+
+
+    bubble.className =
+      "chat-message-bubble";
+
+
+    bubble.textContent =
+      data.message ||
+      "";
+
+
+    if (data.color) {
+
+      bubble.style.backgroundColor =
+        data.color;
+
+    }
+
+
+    content.appendChild(
+      bubble
+    );
+
+
+
+    /* 답글 버튼 */
+
+    const replyButton =
+      document.createElement(
+        "button"
+      );
+
+
+    replyButton.type =
+      "button";
+
+
+    replyButton.className =
+      "chat-reply-button";
+
+
+    replyButton.textContent =
+      "↩";
+
+
+    replyButton.title =
+      "답글";
+
+
+    replyButton.addEventListener(
+      "click",
+      (event) => {
+
+
+        event.stopPropagation();
+
+
+        selectReply(
+          data
+        );
+
+      }
+    );
+
+
+    content.appendChild(
+      replyButton
+    );
+
+
+    row.appendChild(
+      emoji
+    );
+
+
+    row.appendChild(
+      content
+    );
+
+
+    messages.appendChild(
+      row
+    );
+
+
+    scrollChat();
+
+  }
+);
+
+
+
+/* =========================
+   시스템 메시지
+========================= */
+
+socket.on(
+  "system-message",
+  ({
+    message
+  }) => {
+
+
+    hideEmptyChat();
+
+
+    const item =
+      document.createElement(
+        "li"
+      );
+
+
+    item.className =
+      "zip-system-message";
+
+
+    item.textContent =
+      message;
+
+
+    messages.appendChild(
+      item
+    );
+
+
+    scrollChat();
+
+  }
+);
+
+
+
+function hideEmptyChat() {
+
+
+  const emptyChat =
+    document.getElementById(
+      "empty-chat"
+    );
+
+
+  if (emptyChat) {
+
+    emptyChat.style.display =
+      "none";
+
+  }
+
+}
+
+
+function scrollChat() {
+
+
+  const chatSection =
+    document.getElementById(
+      "chat-section"
+    );
+
+
+  chatSection.scrollTop =
+    chatSection.scrollHeight;
+
+}
+
+
+
+/* =========================
+   시작
+========================= */
+
+joinLiveKitRoom();
+
+
+</script>
+
+
+</body>
+
+</html>

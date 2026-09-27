@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zip Screen</title>
+</head>
+
+<body>
+  <h1>Zip Screen</h1>
+  <p>zip screen</p>
+
+  <button id="createBtn">방 생성</button>
+
+  <script>
+    document.getElementById("createBtn").addEventListener("click", () => {
+
+      // 랜덤 방 코드 생성
+      const roomId = Math.random().toString(36).substring(2, 8);
+
+      // 방장으로 입장
+      window.location.href = `/room.html?room=${roomId}&host=1`;
+    });
+  </script>
+</body>
+</html>
